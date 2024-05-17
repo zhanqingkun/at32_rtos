@@ -1,0 +1,8 @@
+{
+	"files.associations": {
+		"at32f435_437_board.h": "c",
+		"at32f435_437_clock.h": "c",
+		"list.h": "c",
+		"freertos.h": "c"
+	}
+}

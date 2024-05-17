@@ -46,38 +46,38 @@ crm_periph_clock_type led_gpio_crm_clk[LED_NUM] = {LED2_GPIO_CRM_CLK, LED3_GPIO_
 static __IO uint32_t fac_us;
 static __IO uint32_t fac_ms;
 
-/* support printf function, usemicrolib is unnecessary */
-#if (__ARMCC_VERSION > 6000000)
-  __asm (".global __use_no_semihosting\n\t");
-  void _sys_exit(int x)
-  {
-    x = x;
-  }
-  /* __use_no_semihosting was requested, but _ttywrch was */
-  void _ttywrch(int ch)
-  {
-    ch = ch;
-  }
-  FILE __stdout;
-#else
- #ifdef __CC_ARM
-  #pragma import(__use_no_semihosting)
-  struct __FILE
-  {
-    int handle;
-  };
-  FILE __stdout;
-  void _sys_exit(int x)
-  {
-    x = x;
-  }
-  /* __use_no_semihosting was requested, but _ttywrch was */
-  void _ttywrch(int ch)
-  {
-    ch = ch;
-  }
- #endif
-#endif
+///* support printf function, usemicrolib is unnecessary */
+//#if (__ARMCC_VERSION > 6000000)
+//  __asm (".global __use_no_semihosting\n\t");
+//  void _sys_exit(int x)
+//  {
+//    x = x;
+//  }
+//  /* __use_no_semihosting was requested, but _ttywrch was */
+//  void _ttywrch(int ch)
+//  {
+//    ch = ch;
+//  }
+//  FILE __stdout;
+//#else
+// #ifdef __CC_ARM
+//  #pragma import(__use_no_semihosting)
+//  struct __FILE
+//  {
+//    int handle;
+//  };
+//  FILE __stdout;
+//  void _sys_exit(int x)
+//  {
+//    x = x;
+//  }
+//  /* __use_no_semihosting was requested, but _ttywrch was */
+//  void _ttywrch(int ch)
+//  {
+//    ch = ch;
+//  }
+// #endif
+//#endif
 
 #if defined (__GNUC__) && !defined (__clang__)
   #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
