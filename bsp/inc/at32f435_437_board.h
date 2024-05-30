@@ -31,6 +31,8 @@ extern "C" {
 #endif
 
 #include "stdio.h"
+#include <stdarg.h>
+#include "string.h"
 #include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_board
