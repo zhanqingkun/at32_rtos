@@ -126,7 +126,7 @@ void DebugMon_Handler(void)
   * @param  none
   * @retval none
   */
-void SysTick_Handler(void)
+__weak void SysTick_Handler(void)
 {
 }
 

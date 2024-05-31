@@ -1,6 +1,6 @@
 #include "usb_driver.h"
 
-// 封装成类似 printf 的函数
+// 封装成类似 printf 的函数 todo:添加互斥锁 避免在两个任务打印时，usb发送失败。
 void usb_vcp_printf(void *dev, const char *format, ...) {
     char usb_buffer[256];
     va_list args;
@@ -14,6 +14,7 @@ void usb_vcp_printf(void *dev, const char *format, ...) {
 
     if (data_len > 0 && data_len < sizeof(usb_buffer)) {
         usb_vcp_send_data(dev, (uint8_t *)usb_buffer, data_len);
+		memset(usb_buffer, 0, data_len);
     }
 }
 

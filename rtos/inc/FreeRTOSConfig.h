@@ -9,6 +9,11 @@
 #define configKERNEL_INTERRUPT_PRIORITY 		255   /* 高四位有效，即等于0xff，或者是15 */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 	191   /* 高四位有效，即等于0xb0，或者是11 */
 
+#define configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )
+extern unsigned int system_core_clock;
+#define configCPU_CLOCK_HZ			( ( unsigned long ) system_core_clock )	
+#define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
+
 #define xPortPendSVHandler   PendSV_Handler
 #define xPortSysTickHandler  SysTick_Handler
 #define vPortSVCHandler      SVC_Handler

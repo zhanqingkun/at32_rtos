@@ -6,6 +6,15 @@
 		"freertos.h": "c",
 		"at32f435_437_usb.h": "c",
 		"usb_driver.h": "c",
-		"usb_core.h": "c"
+		"usb_core.h": "c",
+		"freertosconfig.h": "c",
+		"portmacro.h": "c",
+		"task.h": "c",
+		"portable.h": "c",
+		"projdefs.h": "c",
+		"usbd_sdr.h": "c",
+		"cdc_desc.h": "c",
+		"at32f435_437.h": "c",
+		"usb_conf.h": "c"
 	}
 }

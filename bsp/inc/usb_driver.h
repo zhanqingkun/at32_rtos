@@ -11,7 +11,6 @@ extern "C" {
 #include "cdc_class.h"
 #include "cdc_desc.h"
 
-
 void usb_usart_config(linecoding_type linecoding);
 void usb_vcp_printf(void *dev, const char *format, ...);
 void usb_clock48m_select(usb_clk48_s clk_s);
