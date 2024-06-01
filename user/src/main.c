@@ -28,31 +28,17 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "list.h"
-#include "usb_conf.h"
-#include "usb_core.h"
-#include "usbd_int.h"
-#include "cdc_class.h"
-#include "cdc_desc.h"
 
 /* usb global struct define */
 otg_core_type otg_core_struct;
 extern linecoding_type linecoding;
-extern List_t pxReadyTasksLists[ configMAX_PRIORITIES ];
 /*
 *************************************************************************
 *                        任务控制块 & STACK 
 *************************************************************************
 */
 TaskHandle_t Task1_Handle;
-#define TASK1_STACK_SIZE                    20
-StackType_t Task1Stack[TASK1_STACK_SIZE];
-TCB_t Task1TCB;
-
 TaskHandle_t Task2_Handle;
-#define TASK2_STACK_SIZE                    20
-StackType_t Task2Stack[TASK2_STACK_SIZE];
-TCB_t Task2TCB;
-
 
 void Task1_Entry( void *p_arg );
 void Task2_Entry( void *p_arg );
@@ -95,30 +81,38 @@ int main(void)
 	delay_ms(1000);
 
 	usb_vcp_printf(&otg_core_struct.dev, "Hardware Init success\n");
-    /* 初始化与任务相关的列表，如就绪列表 */
-    prvInitialiseTaskLists();
 
-    /* 创建任务 */
-    Task1_Handle = xTaskCreateStatic( (TaskFunction_t)Task1_Entry,   /* 任务入口 */
-					                  (char *)"Task1",               /* 任务名称，字符串形式 */
-					                  (uint32_t)TASK1_STACK_SIZE ,   /* 任务栈大小，单位为字 */
-					                  (void *) NULL,                 /* 任务形参 */
-					                  (StackType_t *)Task1Stack,     /* 任务栈起始地址 */
-					                  (TCB_t *)&Task1TCB );          /* 任务控制块 */
-    /* 将任务添加到就绪列表 */                                 
-    vListInsertEnd( &( pxReadyTasksLists[1] ), &( ((TCB_t *)(&Task1TCB))->xStateListItem ) );
-                                
-    Task2_Handle = xTaskCreateStatic( (TaskFunction_t)Task2_Entry,   /* 任务入口 */
-					                  (char *)"Task2",               /* 任务名称，字符串形式 */
-					                  (uint32_t)TASK2_STACK_SIZE ,   /* 任务栈大小，单位为字 */
-					                  (void *) NULL,                 /* 任务形参 */
-					                  (StackType_t *)Task2Stack,     /* 任务栈起始地址 */
-					                  (TCB_t *)&Task2TCB );          /* 任务控制块 */
-    /* 将任务添加到就绪列表 */                                 
-    vListInsertEnd( &( pxReadyTasksLists[2] ), &( ((TCB_t *)(&Task2TCB))->xStateListItem ) );
-                                      
-    /* 启动调度器，开始多任务调度，启动成功则不返回 */
-    vTaskStartScheduler();
+	/* enter critical */
+  	taskENTER_CRITICAL();
+
+	 /* create task1 */
+  	if (xTaskCreate((TaskFunction_t )Task1_Entry, 
+					(const char*    )"Task1",
+					(uint16_t  		)512,
+					(void*          )NULL,
+					(UBaseType_t    )2,
+					(TaskHandle_t*  )&Task1_Handle) != pdPASS) {
+		usb_vcp_printf(&otg_core_struct.dev,"Task1 could not be created as there was insufficient heap memory remaining.\r\n");
+	} else {
+		usb_vcp_printf(&otg_core_struct.dev,"Task1 was created successfully.\r\n");
+	}
+
+	/* create task2 */
+  	if (xTaskCreate((TaskFunction_t )Task2_Entry, 
+					(const char*    )"Task2",
+					(uint16_t  		)512,
+					(void*          )NULL,
+					(UBaseType_t    )2,
+					(TaskHandle_t*  )&Task2_Handle) != pdPASS) {
+		usb_vcp_printf(&otg_core_struct.dev,"Task2 could not be created as there was insufficient heap memory remaining.\r\n");
+	} else {
+		usb_vcp_printf(&otg_core_struct.dev,"Task2 was created successfully.\r\n");
+	}
+	/* exit critical */
+	taskEXIT_CRITICAL();
+
+	/* start scheduler */
+	vTaskStartScheduler();
 
 	while(1)
   	{
@@ -130,7 +124,7 @@ void Task1_Entry( void *p_arg )
 {
 	for( ;; )
 	{
-		at32_led_toggle(LED4);
+		at32_led_toggle(LED3);
 		usb_vcp_printf(&otg_core_struct.dev, "Task1 running\n");
 		vTaskDelay(500);
 	}
@@ -141,8 +135,7 @@ void Task2_Entry( void *p_arg )
 {
 	for( ;; )
 	{
-		at32_led_toggle(LED3);
-//		usb_vcp_printf(&otg_core_struct.dev, "Task2 running\n");
+		at32_led_toggle(LED4);
 		vTaskDelay(500);
 	}
 }
