@@ -24,24 +24,35 @@
 
 #include "at32f435_437_board.h"
 #include "at32f435_437_clock.h"
+#include "cm_backtrace.h"
 #include "usb_driver.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "list.h"
 
 /* usb global struct define */
+#define HARDWARE_VERSION               "V1.0.0"
+#define SOFTWARE_VERSION               "V0.1.0"
+
 otg_core_type otg_core_struct;
 extern linecoding_type linecoding;
-/*
-*************************************************************************
-*                        任务控制块 & STACK 
-*************************************************************************
-*/
+
 TaskHandle_t Task1_Handle;
 TaskHandle_t Task2_Handle;
 
 void Task1_Entry( void *p_arg );
 void Task2_Entry( void *p_arg );
+
+void fault_test_by_div0(void) {
+    volatile int * SCB_CCR = (volatile int *) 0xE000ED14; // SCB->CCR
+    int x, y, z;
+
+    *SCB_CCR |= (1 << 4); /* bit4: DIV_0_TRP. */
+
+    x = 10;
+    y = 0;
+    z = x / y;
+}
 
 /**
   * @brief  main function.
@@ -82,63 +93,18 @@ int main(void)
 
 	usb_vcp_printf(&otg_core_struct.dev, "Hardware Init success\n");
 
-	/* enter critical */
-  	taskENTER_CRITICAL();
+	/* CmBacktrace initialize */
+    cm_backtrace_init("CmBacktrace", HARDWARE_VERSION, SOFTWARE_VERSION);
+	
+	usb_vcp_printf(&otg_core_struct.dev, "Task1 running\n");
+	fault_test_by_div0();
 
-	 /* create task1 */
-  	if (xTaskCreate((TaskFunction_t )Task1_Entry, 
-					(const char*    )"Task1",
-					(uint16_t  		)512,
-					(void*          )NULL,
-					(UBaseType_t    )2,
-					(TaskHandle_t*  )&Task1_Handle) != pdPASS) {
-		usb_vcp_printf(&otg_core_struct.dev,"Task1 could not be created as there was insufficient heap memory remaining.\r\n");
-	} else {
-		usb_vcp_printf(&otg_core_struct.dev,"Task1 was created successfully.\r\n");
-	}
-
-	/* create task2 */
-  	if (xTaskCreate((TaskFunction_t )Task2_Entry, 
-					(const char*    )"Task2",
-					(uint16_t  		)512,
-					(void*          )NULL,
-					(UBaseType_t    )2,
-					(TaskHandle_t*  )&Task2_Handle) != pdPASS) {
-		usb_vcp_printf(&otg_core_struct.dev,"Task2 could not be created as there was insufficient heap memory remaining.\r\n");
-	} else {
-		usb_vcp_printf(&otg_core_struct.dev,"Task2 was created successfully.\r\n");
-	}
-	/* exit critical */
-	taskEXIT_CRITICAL();
-
-	/* start scheduler */
-	vTaskStartScheduler();
 
 	while(1)
   	{
   	}
 }
 
-/* 任务1 */
-void Task1_Entry( void *p_arg )
-{
-	for( ;; )
-	{
-		at32_led_toggle(LED3);
-		usb_vcp_printf(&otg_core_struct.dev, "Task1 running\n");
-		vTaskDelay(500);
-	}
-}
-
-/* 任务2 */
-void Task2_Entry( void *p_arg )
-{
-	for( ;; )
-	{
-		at32_led_toggle(LED4);
-		vTaskDelay(500);
-	}
-}
 
 /**
   * @brief  this function handles otgfs interrupt.

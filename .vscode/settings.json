@@ -16,6 +16,7 @@
 		"cdc_desc.h": "c",
 		"at32f435_437.h": "c",
 		"usb_conf.h": "c",
-		"deprecated_definitions.h": "c"
+		"deprecated_definitions.h": "c",
+		"cmb_cfg.h": "c"
 	}
 }
