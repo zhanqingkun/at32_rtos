@@ -91,12 +91,11 @@ int main(void)
 
 	delay_ms(1000);
 
-	usb_vcp_printf(&otg_core_struct.dev, "Hardware Init success\n");
+	printf("Hardware Init success\n");
 
 	/* CmBacktrace initialize */
     cm_backtrace_init("CmBacktrace", HARDWARE_VERSION, SOFTWARE_VERSION);
 	
-	usb_vcp_printf(&otg_core_struct.dev, "Task1 running\n");
 	fault_test_by_div0();
 
 

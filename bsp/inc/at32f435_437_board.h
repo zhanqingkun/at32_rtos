@@ -31,8 +31,6 @@ extern "C" {
 #endif
 
 #include "stdio.h"
-#include <stdarg.h>
-#include "string.h"
 #include "at32f435_437.h"
 
 /** @addtogroup AT32F435_437_board
@@ -84,12 +82,12 @@ typedef enum
 #endif
 
 /**************** define print uart ******************/
-#define PRINT_UART                       USART1
-#define PRINT_UART_CRM_CLK               CRM_USART1_PERIPH_CLOCK
-#define PRINT_UART_TX_PIN                GPIO_PINS_9
-#define PRINT_UART_TX_GPIO               GPIOA
-#define PRINT_UART_TX_GPIO_CRM_CLK       CRM_GPIOA_PERIPH_CLOCK
-#define PRINT_UART_TX_PIN_SOURCE         GPIO_PINS_SOURCE9
+#define PRINT_UART                       USART3
+#define PRINT_UART_CRM_CLK               CRM_USART3_PERIPH_CLOCK
+#define PRINT_UART_TX_PIN                GPIO_PINS_4
+#define PRINT_UART_TX_GPIO               GPIOC
+#define PRINT_UART_TX_GPIO_CRM_CLK       CRM_GPIOC_PERIPH_CLOCK
+#define PRINT_UART_TX_PIN_SOURCE         GPIO_PINS_SOURCE4
 #define PRINT_UART_TX_PIN_MUX_NUM        GPIO_MUX_7
 
 /******************* define button *******************/

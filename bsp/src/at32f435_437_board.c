@@ -49,34 +49,34 @@ static __IO uint32_t fac_ms;
 /* support printf function, usemicrolib is unnecessary */
 #if (__ARMCC_VERSION > 6000000)
  __asm (".global __use_no_semihosting\n\t");
- void _sys_exit(int x)
- {
-   x = x;
- }
- /* __use_no_semihosting was requested, but _ttywrch was */
- void _ttywrch(int ch)
- {
-   ch = ch;
- }
- FILE __stdout;
+  void _sys_exit(int x)
+  {
+    x = x;
+  }
+  /* __use_no_semihosting was requested, but _ttywrch was */
+  void _ttywrch(int ch)
+  {
+    ch = ch;
+  }
+  FILE __stdout;
 #else
-#ifdef __CC_ARM
- #pragma import(__use_no_semihosting)
- struct __FILE
- {
-   int handle;
- };
- FILE __stdout;
- void _sys_exit(int x)
- {
-   x = x;
- }
- /* __use_no_semihosting was requested, but _ttywrch was */
- void _ttywrch(int ch)
- {
-   ch = ch;
- }
-#endif
+ #ifdef __CC_ARM
+  #pragma import(__use_no_semihosting)
+  struct __FILE
+  {
+    int handle;
+  };
+  FILE __stdout;
+  void _sys_exit(int x)
+  {
+    x = x;
+  }
+  /* __use_no_semihosting was requested, but _ttywrch was */
+  void _ttywrch(int ch)
+  {
+    ch = ch;
+  }
+ #endif
 #endif
 
 #if defined (__GNUC__) && !defined (__clang__)
@@ -127,7 +127,7 @@ void uart_print_init(uint32_t baudrate)
   gpio_init_type gpio_init_struct;
 
 #if defined (__GNUC__) && !defined (__clang__)
-//  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IONBF, 0);
 #endif
 
   /* enable the uart and gpio clock */
@@ -172,6 +172,9 @@ void at32_board_init()
 
   /* configure button in at_start board */
   at32_button_init();
+  uart_print_init(115200);
+	
+	
 }
 
 /**

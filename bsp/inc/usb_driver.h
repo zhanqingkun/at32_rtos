@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 #include "at32f435_437_board.h"
+#include <stdarg.h>
+#include "string.h"
 #include "usb_conf.h"
 #include "usb_core.h"
 #include "usbd_int.h"
